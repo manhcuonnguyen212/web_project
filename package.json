@@ -6,10 +6,9 @@
   "scripts": {
     "start": "nodemon --inspect index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-      "dev": "vite",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
-
   },
   "repository": {
     "type": "git",
@@ -22,18 +21,18 @@
   },
   "homepage": "https://github.com/manhcuonnguyen212/web_project#readme",
   "dependencies": {
+    "axios": "^1.7.2",
     "express": "^5.1.0",
-      "axios": "^1.7.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10",
-      "@vitejs/plugin-react": "^4.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
     "autoprefixer": "^10.4.19",
+    "nodemon": "^3.1.10",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
-    "vite": "^5.2.10"
+    "vite": "^5.4.20"
   }
 }
