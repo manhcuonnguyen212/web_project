@@ -1,5 +1,5 @@
-#HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG
-#KHOA: CÔNG NGHỆ THÔNG TIN 1
+# HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG
+# KHOA: CÔNG NGHỆ THÔNG TIN 1
 
 
 Học phần: Lập trình web
