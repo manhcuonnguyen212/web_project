@@ -1,0 +1,11 @@
+@import "../AdminPages.css";
+
+.btn-disabled {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+}
+/* 
+.btn-disabled:hover {
+  transform: none !important;
+  background: #f3f4f6 !important;
+} */
