@@ -1,16 +1,62 @@
-# React + Vite
+# Blog Website Project (MERN Stack)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Mô tả
+Hệ thống website blog gồm 3 ứng dụng:
+- **Server (Backend):** Node.js, Express.js, MongoDB
+- **Client (Frontend):** React.js cho người dùng
+- **Admin (Frontend):** React.js cho quản trị viên
 
-Currently, two official plugins are available:
+## Cấu trúc thư mục
+```
+web_project/
+├── blog-website-server/   # Express + MongoDB
+├── blog-website-client/   # React Client
+├── blog-website-admin/    # React Admin
+└── data/                  # Seed data
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Công nghệ sử dụng
+- Node.js, Express.js, MongoDB, Mongoose
+- React 18, Redux Toolkit, React Router, Axios
+- JWT, Bcrypt, Nodemailer
+- Vite, React Toastify, React Icons
 
-## React Compiler
+## Cài đặt & chạy dự án
+1. **Clone repo:**
+   ```bash
+   git clone <repo-url>
+   ```
+2. **Cài đặt package:**
+   ```bash
+   cd blog-website-server && npm install
+   cd ../blog-website-client && npm install
+   cd ../blog-website-admin && npm install
+   ```
+3. **Cấu hình biến môi trường:**
+   - Tạo file `.env` trong `blog-website-server` với các biến cần thiết (MONGO_CONNECTION, JWT_SECRET, ...)
+4. **Chạy server:**
+   ```bash
+   cd blog-website-server
+   npm start
+   ```
+5. **Chạy client:**
+   ```bash
+   cd blog-website-client
+   npm run dev
+   ```
+6. **Chạy admin:**
+   ```bash
+   cd blog-website-admin
+   npm run dev
+   ```
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## Tài khoản mẫu
+- Đăng ký tài khoản user trực tiếp trên client.
+- Tài khoản admin: tạo thủ công trong database hoặc qua seed script (nếu có).
 
-## Expanding the ESLint configuration
+## Bảo mật
+- Không commit file `.env`, dữ liệu nhạy cảm, file seed, file test cá nhân lên git.
+- Đã cấu hình `.gitignore` để loại trừ các file quan trọng.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## License
+MIT

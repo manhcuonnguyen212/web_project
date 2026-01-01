@@ -8,6 +8,7 @@ import Users from "./pages/Users/Users";
 import Posts from "./pages/Posts/Posts";
 import Categories from "./pages/Categories/Categories";
 import Admins from "./pages/Admins/Admins";
+import Reports from "./pages/Reports/Reports";
 import Comments from "./pages/Comments/Comments";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="categories" element={<Categories />} />
           <Route path="comments" element={<Comments />} />
           <Route path="admins" element={<Admins />} />
+          <Route path="reports" element={<Reports />} />
         </Route>
         <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>

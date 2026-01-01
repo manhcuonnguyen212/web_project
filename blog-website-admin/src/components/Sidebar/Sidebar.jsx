@@ -11,6 +11,7 @@ import {
   FaBars,
   FaTimes,
   FaComment,
+  FaFlag,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -37,6 +38,7 @@ function Sidebar() {
     { path: "/admin/posts", icon: <FaFileAlt />, label: "Bài viết" },
     { path: "/admin/categories", icon: <FaFolder />, label: "Danh mục" },
     { path: "/admin/comments", icon: <FaComment />, label: "Bình luận" },
+    { path: "/admin/reports", icon: <FaFlag />, label: "Quản lý báo cáo" },
     { path: "/admin/admins", icon: <FaUserShield />, label: "Quản trị viên" },
   ];
 

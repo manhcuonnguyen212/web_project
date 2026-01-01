@@ -14,10 +14,12 @@ import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
 import useAxiosJWT from "../../config/axiosConfig";
 import EditBlogModal from "../../shared/BlogModal/EditBlogModal";
+import AddPostModal from "../../shared/BlogModal/AddPostModal";
 
 import "./Posts.css";
 import { useEffect } from "react";
 function Posts() {
+  const [showAddModal, setShowAddModal] = useState(false);
   const user = useSelector((state) => state.auth?.user);
   const getAxiosJWT = useAxiosJWT();
   const axiosJWT = getAxiosJWT();
@@ -31,6 +33,8 @@ function Posts() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
+
+  // Mở modal tạo mới bài viết (dùng EditBlogModal)
 
   const statusOptions = [
     { value: "all", label: "Tất cả trạng thái" },
@@ -253,7 +257,7 @@ function Posts() {
           </p>
         </div>
         <button className="btn-add" onClick={handleCreateNew}>
-          <FaPlus /> Tạo bài viết mới
+          <FaPlus /> Thêm bài viết
         </button>
       </div>
 
@@ -424,6 +428,7 @@ function Posts() {
         )}
       </div>
 
+      {/* Modal thêm/sửa bài viết */}
       {showModal && (
         <EditBlogModal
           post={editingPost}

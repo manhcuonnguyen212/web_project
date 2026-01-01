@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
-import { FaTimes, FaSave, FaPlus, FaTrash, FaImage } from "react-icons/fa";
+import { FaTimes, FaSave, FaPlus, FaTrash, FaImage, FaUpload } from "react-icons/fa";
+import { toast } from "react-toastify";
+import useAxiosJWT from "../../config/axiosConfig";
+import { BASE_URL } from "../../config";
 import "./EditBlogModal.css";
 
 function EditBlogModal({ post, onClose, onSave }) {
+    const getAxiosJWT = useAxiosJWT();
+    const axiosJWT = getAxiosJWT();
+    const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -12,6 +18,8 @@ function EditBlogModal({ post, onClose, onSave }) {
     status: "published",
     content: [],
   });
+  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
 
   const categories = [
     "Du lịch",
@@ -46,6 +54,19 @@ function EditBlogModal({ post, onClose, onSave }) {
       ...prev,
       [name]: value,
     }));
+  };
+
+  // Upload file ảnh đại diện, lấy link trả về và tự động điền vào thumbnail
+  const handleThumbnailFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
+      toast.error("Chỉ cho phép file ảnh jpeg, jpg, png, webp!");
+      return;
+    }
+    setThumbnailFile(file);
+    setThumbnailPreview(URL.createObjectURL(file));
+    setFormData((prev) => ({ ...prev, thumbnail: "" }));
   };
 
   const handleAddContentBlock = (type) => {
@@ -83,9 +104,33 @@ function EditBlogModal({ post, onClose, onSave }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(post?._id, formData);
+    let thumbnailUrl = formData.thumbnail;
+    if (thumbnailFile) {
+      setUploading(true);
+      const formDataUpload = new FormData();
+      formDataUpload.append("featuredImage", thumbnailFile);
+      try {
+        const res = await axiosJWT.post(`${BASE_URL}/news/upload-image`, formDataUpload, {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        });
+        if (res.data?.success && res.data?.url) {
+          thumbnailUrl = res.data.url;
+        } else {
+          toast.error(res.data?.message || "Lỗi upload ảnh đại diện");
+          setUploading(false);
+          return;
+        }
+      } catch (err) {
+        toast.error(err.response?.data?.message || "Lỗi upload ảnh đại diện");
+        setUploading(false);
+        return;
+      }
+      setUploading(false);
+    }
+    onSave(post?._id, { ...formData, thumbnail: thumbnailUrl });
   };
 
   if (!post) return null;
@@ -134,16 +179,38 @@ function EditBlogModal({ post, onClose, onSave }) {
 
           <div className="blog-form-row">
             <div className="blog-form-group">
-              <label htmlFor="thumbnail">URL ảnh đại diện</label>
-              <input
-                type="url"
-                id="thumbnail"
-                name="thumbnail"
-                value={formData.thumbnail}
-                onChange={handleChange}
-                className="blog-form-input"
-                placeholder="https://example.com/image.jpg"
-              />
+              <label htmlFor="thumbnail">Ảnh đại diện</label>
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input
+                  type="text"
+                  id="thumbnail"
+                  name="thumbnail"
+                  value={formData.thumbnail}
+                  onChange={handleChange}
+                  className="blog-form-input"
+                  placeholder="Nhập URL hoặc upload ảnh"
+                  style={{ flex: 1 }}
+                />
+                <label htmlFor="thumbnail-upload" style={{ display: "flex", alignItems: "center", cursor: "pointer", background: "#f3f4f6", borderRadius: 6, padding: "8px 12px", border: "1px solid #d1d5db" }}>
+                  <FaUpload style={{ marginRight: 4 }} />
+                  <span>{uploading ? "Đang tải..." : "Upload"}</span>
+                  <input
+                    id="thumbnail-upload"
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleThumbnailFileChange}
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+              {(thumbnailPreview || formData.thumbnail) && (
+                <img src={
+                  thumbnailPreview
+                    ? thumbnailPreview
+                    : (formData.thumbnail.startsWith('http') ? formData.thumbnail : `${BASE_URL}${formData.thumbnail}`)
+                } alt="preview" style={{ maxWidth: 200, margin: 8, borderRadius: 8 }} />
+              )}
             </div>
           </div>
 
@@ -252,15 +319,58 @@ function EditBlogModal({ post, onClose, onSave }) {
                       />
                     ) : (
                       <div className="blog-image-block">
-                        <input
-                          type="url"
-                          value={block.url}
-                          onChange={(e) =>
-                            handleContentChange(index, "url", e.target.value)
-                          }
-                          className="blog-form-input"
-                          placeholder="URL hình ảnh"
-                        />
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                          <input
+                            type="text"
+                            value={block.url}
+                            onChange={(e) => {
+                              handleContentChange(index, "url", e.target.value);
+                            }}
+                            className="blog-form-input"
+                            placeholder="URL hoặc đường dẫn ảnh"
+                            style={{ flex: 1 }}
+                            required
+                          />
+                          {/* Hướng dẫn: Ảnh chỉ hiển thị khi bạn nhấn Lưu bài viết. Nếu chỉ upload mà không lưu, ảnh sẽ không gắn với bài viết! */}
+                          <label htmlFor={`content-image-upload-${index}`} style={{ display: "flex", alignItems: "center", cursor: "pointer", background: "#f3f4f6", borderRadius: 6, padding: "8px 12px", border: "1px solid #d1d5db" }}>
+                            <FaUpload style={{ marginRight: 4 }} />
+                            <span>{uploading ? "Đang tải..." : "Upload"}</span>
+                            <input
+                              id={`content-image-upload-${index}`}
+                              type="file"
+                              accept="image/*"
+                              style={{ display: "none" }}
+                              onChange={async (e) => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+                                if (!['image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
+                                  toast.error("Chỉ cho phép file ảnh jpeg, jpg, png, webp!");
+                                  return;
+                                }
+                                const formDataUpload = new FormData();
+                                formDataUpload.append("featuredImage", file);
+                                setUploading(true);
+                                try {
+                                  const res = await axiosJWT.post(`${BASE_URL}/news/upload-image`, formDataUpload, {
+                                    headers: { "Content-Type": "multipart/form-data" },
+                                    withCredentials: true,
+                                  });
+                                  if (res.data?.success && res.data?.url) {
+                                    handleContentChange(index, "url", res.data.url);
+                                    toast.success("Upload ảnh thành công!");
+                                  } else {
+                                    toast.error(res.data?.message || "Lỗi upload ảnh");
+                                  }
+                                } catch (err) {
+                                  toast.error(err.response?.data?.message || "Lỗi upload ảnh");
+                                } finally {
+                                  setUploading(false);
+                                }
+                              }}
+                              disabled={uploading}
+                            />
+                          </label>
+                        </div>
                         <input
                           type="text"
                           value={block.alt}
@@ -283,6 +393,11 @@ function EditBlogModal({ post, onClose, onSave }) {
                           className="blog-form-input"
                           placeholder="Chú thích hình ảnh"
                         />
+                        {block.url && (
+                          <img src={
+                            block.url.startsWith('http') ? block.url : `${BASE_URL}${block.url}`
+                          } alt="preview" style={{ maxWidth: 200, margin: 8, borderRadius: 8 }} />
+                        )}
                       </div>
                     )}
                   </div>

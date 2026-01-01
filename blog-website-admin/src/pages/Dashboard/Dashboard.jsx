@@ -14,40 +14,51 @@ import { toast } from "react-toastify";
 import useAxiosJWT from "../../config/axiosConfig";
 
 import "./Dashboard.css";
+
 function Dashboard() {
   const user = useSelector((state) => state.auth?.user);
   const getAxiosJWT = useAxiosJWT();
   const axiosJWT = getAxiosJWT();
   const [recentPosts, setRecentPosts] = useState([]);
+  const [userCount, setUserCount] = useState(0);
+  const [userChange, setUserChange] = useState(0);
+  const [postCount, setPostCount] = useState(0);
+  const [postChange, setPostChange] = useState(0);
+  const [categoryCount, setCategoryCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
+  const [commentChange, setCommentChange] = useState(0);
 
   const stats = [
     {
       icon: <FaUsers />,
       title: "Tổng người dùng",
-      value: "1,234",
-      change: "+12%",
+      value: userCount,
+      change: userChange,
       color: "#667eea",
+      showChange: true,
     },
     {
       icon: <FaFileAlt />,
       title: "Tổng bài viết",
-      value: "456",
-      change: "+8%",
+      value: postCount,
+      change: postChange,
       color: "#764ba2",
+      showChange: true,
     },
     {
       icon: <FaFolder />,
       title: "Danh mục",
-      value: "24",
-      change: "+2",
+      value: categoryCount,
       color: "#f59e0b",
+      showChange: false,
     },
     {
       icon: <FaComment />,
       title: "Bình luận",
-      value: "3,891",
-      change: "+24%",
+      value: commentCount,
+      change: commentChange,
       color: "#10b981",
+      showChange: true,
     },
   ];
 
@@ -69,8 +80,35 @@ function Dashboard() {
     }
   };
 
+
+
   useEffect(() => {
     handleGetRecentNews();
+
+    // Fetch total users
+    axiosJWT.get(`${BASE_URL}/user`, { headers: { Authorization: `Bearer ${user?.accessToken}` }, withCredentials: true })
+      .then(res => setUserCount(res.data.data?.total || 0));
+    // Fetch user monthly growth
+    axiosJWT.get(`${BASE_URL}/user/admin/stats`, { headers: { Authorization: `Bearer ${user?.accessToken}` }, withCredentials: true })
+      .then(res => setUserChange(res.data.data?.change || 0));
+
+    // Fetch total posts
+    axiosJWT.get(`${BASE_URL}/news/admin`, { headers: { Authorization: `Bearer ${user?.accessToken}` }, withCredentials: true })
+      .then(res => setPostCount(res.data.data?.pagination?.totalItems || 0));
+    // Fetch post monthly growth
+    axiosJWT.get(`${BASE_URL}/news/admin/stats`, { headers: { Authorization: `Bearer ${user?.accessToken}` }, withCredentials: true })
+      .then(res => setPostChange(res.data.data?.change || 0));
+
+    // Fetch total categories
+    axiosJWT.get(`${BASE_URL}/category`, { headers: { Authorization: `Bearer ${user?.accessToken}` }, withCredentials: true })
+      .then(res => setCategoryCount(res.data.data?.length || 0));
+
+    // Fetch total comments (status !== 'deleted')
+    axiosJWT.get(`${BASE_URL}/comment/all?page=1&limit=1`, { headers: { Authorization: `Bearer ${user?.accessToken}` }, withCredentials: true })
+      .then(res => setCommentCount(res.data.data?.pagination?.total || 0));
+    // Fetch comment monthly growth
+    axiosJWT.get(`${BASE_URL}/comment/admin/stats`, { headers: { Authorization: `Bearer ${user?.accessToken}` }, withCredentials: true })
+      .then(res => setCommentChange(res.data.data?.change || 0));
   }, []);
 
   return (
@@ -93,9 +131,16 @@ function Dashboard() {
             <div className="stat-content">
               <div className="stat-title">{stat.title}</div>
               <div className="stat-value">{stat.value}</div>
-              <div className="stat-change">
-                {stat.change} so với tháng trước
-              </div>
+              {stat.showChange && (
+                <div className="stat-change">
+                  {stat.change > 0
+                    ? `+${stat.change}%`
+                    : stat.change === 0
+                      ? `0%`
+                      : `${stat.change}%`
+                  } so với tháng trước
+                </div>
+              )}
             </div>
           </div>
         ))}
