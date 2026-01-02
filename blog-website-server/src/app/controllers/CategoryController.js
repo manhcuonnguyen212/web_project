@@ -14,27 +14,14 @@ const generateSlug = (name) => {
 
 // Get all categories (Admin)
 export const getAllCategories = async (req, res) => {
-  const userId = req.user._id;
-  const role = req.user.role;
   try {
-    const user = await UserModel.findById(userId);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
-    }
-    if (role === "user") {
-      return res.status(403).json({ success: false, message: "Access denied" });
-    }
-
     const categories = await CategoryModel.find().sort({ createdAt: -1 });
-
     // Count posts for each category
     const categoriesWithCount = await Promise.all(
       categories.map(async (category) => {
-        const postCount = await NewsModel.countDocuments({ 
+        const postCount = await NewsModel.countDocuments({
           category: category.name,
-          status: 'published' 
+          status: 'published'
         });
         return {
           ...category.toObject(),
@@ -42,7 +29,6 @@ export const getAllCategories = async (req, res) => {
         };
       })
     );
-
     res.status(200).json({
       success: true,
       data: categoriesWithCount,

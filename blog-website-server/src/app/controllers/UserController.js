@@ -675,12 +675,23 @@ export const changePasswordAdmin = async (req, res) => {
       </div>
     `;
 
-    await sendMail(targetUser.email, emailSubject, emailHtml);
+    // Log thời gian trước khi gửi email
+    const sendMailStart = Date.now();
 
+    // Trả về response cho client trước, gửi email ở background
     res.status(200).json({
       success: true,
-      message: "Mật khẩu mới đã được gửi đến email",
+      message: "Mật khẩu mới sẽ được gửi đến email trong giây lát.",
     });
+
+    // Gửi email ở background, log thời gian
+    sendMail(targetUser.email, emailSubject, emailHtml)
+      .then(() => {
+        console.log(`[changePasswordAdmin] Gửi email thành công cho ${targetUser.email} trong`, Date.now() - sendMailStart, 'ms');
+      })
+      .catch((err) => {
+        console.error(`[changePasswordAdmin] Lỗi gửi email cho ${targetUser.email}:`, err);
+      });
   } catch (error) {
     res.status(500).json({
       success: false,
