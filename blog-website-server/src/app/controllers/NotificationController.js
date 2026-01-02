@@ -4,7 +4,6 @@ import CommentModel from "../models/CommentModel.js";
 // Get user notifications
 export const getNotifications = async (req, res) => {
   try {
-    console.log("getNotifications called");
     console.log("req.user:", req.user);
     
     const userId = req.user._id;

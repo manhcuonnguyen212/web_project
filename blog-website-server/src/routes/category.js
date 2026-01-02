@@ -9,7 +9,7 @@ import { verifyAdmin } from "../middlewares/verify.js";
 
 const router = express.Router();
 
-router.get("/", verifyAdmin, getAllCategories);
+router.get("/", getAllCategories);
 router.post("/", verifyAdmin, createCategory);
 router.put("/:categoryId", verifyAdmin, editCategory);
 router.delete("/:categoryId", verifyAdmin, deleteCategory);

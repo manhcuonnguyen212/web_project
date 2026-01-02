@@ -7,23 +7,36 @@ import axios from "axios";
 import { BASE_URL } from "../../config/index";
 import BlogCard from "../../components/BlogCard/BlogCard";
 
+
 import "./Home.css";
-const CATEGORIES = [
-  "Tất cả",
-  "Du lịch",
-  "Ẩm thực",
-  "Làm đẹp",
-  "Công nghệ",
-  "Sức khỏe",
-  "Thời trang",
-  "Tài chính",
-  "Giải trí",
-  "Nhà cửa",
-];
 
 function Home() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Tất cả");
+  const [categories, setCategories] = useState(["Tất cả"]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [categoriesError, setCategoriesError] = useState("");
+    // Fetch categories from backend
+    useEffect(() => {
+      const fetchCategories = async () => {
+        setCategoriesLoading(true);
+        setCategoriesError("");
+        try {
+          const res = await axios.get(`${BASE_URL}/categories`);
+          if (res.data.success && Array.isArray(res.data.data)) {
+            const names = res.data.data.map((cat) => cat.name);
+            setCategories(["Tất cả", ...names]);
+          } else {
+            setCategoriesError("Không thể tải danh mục");
+          }
+        } catch (err) {
+          setCategoriesError("Không thể tải danh mục");
+        } finally {
+          setCategoriesLoading(false);
+        }
+      };
+      fetchCategories();
+    }, []);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [news, setNews] = useState([]);
@@ -134,20 +147,24 @@ function Home() {
                   onClick={() => setIsDropdownOpen(false)}
                 />
                 <div className="dropdown-menu">
-                  {CATEGORIES.map((c) => (
-                    <div
-                      key={c}
-                      className={`dropdown-item ${
-                        c === category ? "active" : ""
-                      }`}
-                      onClick={() => {
-                        setCategory(c);
-                        setIsDropdownOpen(false);
-                      }}
-                    >
-                      {c}
-                    </div>
-                  ))}
+                  {categoriesLoading ? (
+                    <div className="dropdown-item">Đang tải...</div>
+                  ) : categoriesError ? (
+                    <div className="dropdown-item error">{categoriesError}</div>
+                  ) : (
+                    categories.map((c) => (
+                      <div
+                        key={c}
+                        className={`dropdown-item ${c === category ? "active" : ""}`}
+                        onClick={() => {
+                          setCategory(c);
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        {c}
+                      </div>
+                    ))
+                  )}
                 </div>
               </>
             )}
