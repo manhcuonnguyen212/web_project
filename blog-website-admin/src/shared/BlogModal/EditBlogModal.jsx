@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaTimes, FaSave, FaPlus, FaTrash, FaImage, FaUpload } from "react-icons/fa";
 import { toast } from "react-toastify";
 import useAxiosJWT from "../../config/axiosConfig";
-import { BASE_URL } from "../../config";
+import { BASE_URL, BASE_IMAGE_URL } from "../../config";
 import "./EditBlogModal.css";
 
 function EditBlogModal({ post, onClose, onSave }) {
@@ -395,7 +395,9 @@ function EditBlogModal({ post, onClose, onSave }) {
                         />
                         {block.url && (
                           <img src={
-                            block.url.startsWith('http') ? block.url : `${BASE_URL}${block.url}`
+                            block.url.startsWith('http')
+                              ? block.url
+                              : `${BASE_IMAGE_URL}${block.url.startsWith('/') ? '' : '/'}${block.url}`
                           } alt="preview" style={{ maxWidth: 200, margin: 8, borderRadius: 8 }} />
                         )}
                       </div>

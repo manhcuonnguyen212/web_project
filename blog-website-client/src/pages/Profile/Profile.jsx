@@ -517,7 +517,8 @@ function Profile() {
                       savedPosts.map((post) => (
                         <div key={post._id} className="post-card" onClick={() => navigate(`/post/${post._id}`)}>
                           <div className="post-image">
-                            <img src={post.thumbnail} alt={post.title} />
+                            <img src={post.thumbnail && post.thumbnail.startsWith('http') ? post.thumbnail : `${process.env.NODE_ENV === "production" ? "https://doanlaptrinhweb-server.onrender.com" : "http://localhost:5000"}${post.thumbnail}`}
+                              alt={post.title} />
                           </div>
                           <div className="post-info">
                             <h3>{post.title}</h3>
@@ -530,7 +531,8 @@ function Profile() {
                       likedPosts.map((post) => (
                         <div key={post._id} className="post-card" onClick={() => navigate(`/post/${post._id}`)}>
                           <div className="post-image">
-                            <img src={post.thumbnail} alt={post.title} />
+                            <img src={post.thumbnail && post.thumbnail.startsWith('http') ? post.thumbnail : `${process.env.NODE_ENV === "production" ? "https://doanlaptrinhweb-server.onrender.com" : "http://localhost:5000"}${post.thumbnail}`}
+                              alt={post.title} />
                           </div>
                           <div className="post-info">
                             <h3>{post.title}</h3>
@@ -543,7 +545,8 @@ function Profile() {
                       commentedPosts.map((post) => (
                         <div key={post._id} className="post-card" onClick={() => navigate(`/post/${post._id}`)}>
                           <div className="post-image">
-                            <img src={post.thumbnail} alt={post.title} />
+                            <img src={post.thumbnail && post.thumbnail.startsWith('http') ? post.thumbnail : `${process.env.NODE_ENV === "production" ? "https://doanlaptrinhweb-server.onrender.com" : "http://localhost:5000"}${post.thumbnail}`}
+                              alt={post.title} />
                           </div>
                           <div className="post-info">
                             <h3>{post.title}</h3>
