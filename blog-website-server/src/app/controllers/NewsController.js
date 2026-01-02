@@ -37,6 +37,7 @@ export const getPostStats = async (req, res) => {
 // Upload ảnh đại diện bài viết
 export async function uploadImage(req, res) {
   try {
+    console.log("uploadImage called, req.user:", req.user);
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'Không có file ảnh được upload' });
     }

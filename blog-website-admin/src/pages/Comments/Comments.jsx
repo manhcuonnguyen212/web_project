@@ -103,8 +103,9 @@ function Comments() {
     }
   };
 
+  const mainSite = import.meta.env.VITE_MAIN_SITE_URL || window.location.origin;
   const handleViewPost = (newsId) => {
-    window.open(`http://localhost:5173/post/${newsId}`, "_blank");
+    window.open(`${mainSite}/post/${newsId}`, "_blank");
   };
 
   const handlePageChange = (page) => {

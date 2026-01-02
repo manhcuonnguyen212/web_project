@@ -55,9 +55,10 @@ const useAxiosJWT = () => {
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          // Token không hợp lệ hoặc hết hạn, logout ngay lập tức
-          dispatch(logoutSuccess());
-          window.location.href = "/admin/login";
+          // Token không hợp lệ hoặc hết hạn, chỉ thông báo lỗi, không logout ngay lập tức
+          // Có thể toast lỗi ở đây
+          // toast.error("Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại.");
+          // Nếu muốn logout, chỉ logout khi refresh token thất bại (đã xử lý ở trên)
         }
         return Promise.reject(error);
       }
