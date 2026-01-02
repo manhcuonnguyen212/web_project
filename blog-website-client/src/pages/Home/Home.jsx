@@ -22,7 +22,7 @@ function Home() {
         setCategoriesLoading(true);
         setCategoriesError("");
         try {
-          const res = await axios.get(`${BASE_URL}/categories`);
+          const res = await axios.get(`${BASE_URL}/category`);
           if (res.data.success && Array.isArray(res.data.data)) {
             const names = res.data.data.map((cat) => cat.name);
             setCategories(["Tất cả", ...names]);
