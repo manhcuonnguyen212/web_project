@@ -35,9 +35,22 @@ const connectDB = async () => {
 
 // middlewares
 app.use(cookieParser());
+const allowedOrigins = [
+  'https://blogmoingay.id.vn',
+  'https://admin.blogmoingay.id.vn'
+];
+
 app.use(
   cors({
-    origin: true,
+    origin: function (origin, callback) {
+      // Cho phép cả request không có origin (như từ Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   })
 );
