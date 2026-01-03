@@ -11,3 +11,7 @@ logs/
 # Ignore OS files
 .DS_Store
 Thumbs.db
+blog-website-server/.env
+blog-website-server/node_modules/
+blog-website-client/node_modules/
+blog-website-admin/node_modules/
