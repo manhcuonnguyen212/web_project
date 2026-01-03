@@ -33,7 +33,22 @@ web_project/
    cd ../blog-website-admin && npm install
    ```
 3. **Cấu hình biến môi trường:**
-   - Tạo file `.env` trong `blog-website-server` với các biến cần thiết (MONGO_CONNECTION, JWT_SECRET, ...)
+   - Tạo file `.env` trong `blog-website-server` với nội dung mẫu như sau:
+
+     ```env
+     PORT=5000
+     MONGO_CONNECTION=your_mongodb_connection_string
+     JWT_ACCESSTOKEN_KEY=your_access_token_secret
+     JWT_REFRESHTOKEN_KEY=your_refresh_token_secret
+     CLIENT_URL=http://localhost:5173
+     NODE_ENV=development
+     EMAIL_USER=your_email@gmail.com
+     EMAIL_PASSWORD=your_email_app_password
+     ```
+   - Thay thế các giá trị `your_*` bằng thông tin thực tế của bạn.
+
+- Tạo file `.env` trong `blog-website-admin` với nội dung mẫu như sau:
+      VITE_MAIN_SITE_URL = đường dẫn tới client (ví dụ nếu local là http://localhost:5173, hoặc domain name nếu có deloy)
 4. **Chạy server:**
    ```bash
    cd blog-website-server
