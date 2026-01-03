@@ -730,12 +730,12 @@ export const createAdmin = async (req, res) => {
       });
     }
 
-    // Check if email already exists
-    const existingUser = await UserModel.findOne({ email });
-    if (existingUser) {
+    // Chỉ kiểm tra trùng email với các tài khoản admin
+    const existingAdmin = await UserModel.findOne({ email, role: { $in: ["admin", "supervisor admin"] } });
+    if (existingAdmin) {
       return res.status(400).json({
         success: false,
-        message: "Email đã được sử dụng",
+        message: "Email đã được sử dụng cho tài khoản quản trị viên khác",
       });
     }
 
