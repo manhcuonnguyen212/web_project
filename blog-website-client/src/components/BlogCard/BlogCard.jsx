@@ -58,7 +58,7 @@ function BlogCard({ post }) {
             </span>
           </div>
           <Link to={`/post/${post._id}`} className="blog-read-more">
-            Đọc tiếp
+            xem chi tiết
             <FaArrowRight />
           </Link>
         </div>
